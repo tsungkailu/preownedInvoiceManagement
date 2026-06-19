@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///D:/tsungkai.lu/Downloads/index_33.html -->
+<!-- saved from url=(0047)file:///D:/tsungkai.lu/Downloads/index_117.html -->
 <html lang="zh-TW"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -69,10 +69,8 @@ col.c-cancel-combo { width: 130px; }
 .lic-gray  { color: #d32f2f; }
 .lic-red   { color: #1a1a1a; }
 
-.dest-unsent { font-size: 11px; color: #bbb; line-height: 1.3; }
 .btn-record { background: none; border: none; font-size: 11px; color: #bbb; cursor: pointer; padding: 0 2px; line-height: 1; margin-left: 3px; vertical-align: middle; flex-shrink: 0; }
 .btn-record:hover { color: #555; }
-.dest-row2 { display: flex; align-items: center; }
 
 .btn-upload   { background: #fff; color: #1a73e8; border: 1px solid #1a73e8; border-radius: 5px; padding: 3px 9px; font-size: 11px; cursor: pointer; white-space: nowrap; }
 .btn-upload:hover   { background: #e8f0fe; }
@@ -213,12 +211,13 @@ col.c-cancel-combo { width: 130px; }
 /* Location row */
 .apply-loc-row { display: flex; flex-direction: column; gap: 5px; }
 .apply-loc-row > label { font-size: 11px; color: #777; font-weight: 500; }
-.apply-loc-controls { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.apply-loc-controls { display: flex; align-items: center; gap: 16px; justify-content: flex-start; }
 .radio-loc-group { display: flex; align-items: center; gap: 6px; }
-.radio-loc-opt { display: flex; align-items: center; gap: 4px; font-size: 13px; cursor: pointer; color: #333; }
-.radio-loc-opt input[type=radio] { accent-color: #1a73e8; width: 14px; height: 14px; cursor: pointer; }
+.radio-loc-opt { display: flex; align-items: center; gap: 4px; font-size: 13px; cursor: pointer; color: #333; margin-right: 6px; }
+.radio-loc-opt input[type=radio] { accent-color: #1a73e8; width: 14px; height: 14px; cursor: pointer; flex-shrink: 0; }
+.radio-loc-text { display: inline-block; width: 4em; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .loc-select {
-  font-size: 13px; height: 34px; min-width: 120px;
+  font-size: 13px; height: 34px; width: 10em; margin-left: 2px;
   border: 1px solid #d2d2d2; border-radius: 7px;
   padding: 0 9px; background: #fff; color: #1a1a1a; outline: none;
 }
@@ -264,7 +263,7 @@ col.c-cancel-combo { width: 130px; }
       <button class="btn-default" onclick="openGuideModal()" style="height:34px;font-size:12px;gap:5px;">📖 操作指引</button>
       <div class="sim-date-badge">
       <span class="sim-label">模擬日期</span>
-      <span class="sim-val" id="simDateVal">2026/06/13</span>
+      <span class="sim-val" id="simDateVal">2026/06/18</span>
       <button class="tip-btn" tabindex="0">ℹ️</button>
       <div class="tip-popup">
         <span class="tip-swatch"></span>指定開立日期已至但尚未開立發票，以粉紅底色標示。
@@ -289,12 +288,6 @@ col.c-cancel-combo { width: 130px; }
       </select>
     </div>
     <div class="filter-group">
-      <label>車證狀態</label>
-      <select id="destFilter">
-        <option>全部</option><option>待寄件</option><option>已寄送</option>
-      </select>
-    </div>
-    <div class="filter-group">
       <label>牌照狀態</label>
       <select id="licFilter">
         <option>全部</option><option>未繳銷或出售</option>
@@ -305,294 +298,40 @@ col.c-cancel-combo { width: 130px; }
   </div>
 
   <div class="btn-row">
-    <span class="count-label" id="countLabel">共 7 台</span>
+    <span class="count-label" id="countLabel">共 8 台</span>
   </div>
 
   <div class="table-wrap">
     <table>
       <colgroup>
         <col class="c-icon">      <!-- 發票 -->
-        <col class="c-order">     <!-- 出售單號 / 車牌號碼 -->
+        <col class="c-order">     <!-- 車牌號碼 / 出售單號 -->
         <col class="c-agent">     <!-- 申請業代 -->
         <col class="c-ts">        <!-- 業代申請時間 -->
         <col class="c-dates">     <!-- 指定/實際開立日期 -->
         <col class="c-amt">       <!-- 發票金額 -->
-        <col class="c-dest">      <!-- 車證寄送處/寄件取件日 -->
-        <col class="c-lic-combo">  <!-- 牌照狀態／繳銷處 -->
-        <col class="c-icon">      <!-- 牌照繳銷單 -->
         <col class="c-loan-combo"><!-- 車貸金額／核貸總額 -->
         <col class="c-ts">        <!-- 預計撥款日 -->
+        <col class="c-dest">      <!-- 車證寄送處／牌照繳銷處 -->
+        <col class="c-lic-combo">  <!-- 牌照狀態／牌照繳銷單 -->
         <col class="c-icon">      <!-- 編輯 -->
       </colgroup>
       <thead>
         <tr>
           <th class="center">發票</th>
-          <th>出售單號<br>車牌號碼</th>
+          <th>車牌號碼<br>出售單號</th>
           <th>申請業代</th>
           <th>業代申請時間</th>
           <th>指定開立日期<br>實際開立日期</th>
           <th class="right">發票金額</th>
-          <th>車證寄送處<br>寄件取件日</th>
-          <th>牌照狀態<br>繳銷處</th>
-          <th class="center">牌照繳銷單</th>
           <th class="right">車貸金額<br>核貸總額</th>
           <th>預計撥款日</th>
+          <th>車證寄送處<br>牌照繳銷處</th>
+          <th>牌照狀態<br>牌照繳銷單</th>
           <th class="center">操作</th>
         </tr>
       </thead>
-      <tbody id="tableBody"><tr>
-      <td class="center"><button class="btn-detail" onclick="openDetailModal(&#39;P2026010011&#39;,&#39;RCS-9687&#39;)">列印</button></td>
-      <td><div class="cell-two">
-    <div style="display:flex;align-items:center;"><span class="line1">P2026010011</span><button class="btn-record" onclick="alert(&#39;即將前往訂單明細頁&#39;)" title="查看訂單明細" style="margin-left:3px;">🔍</button></div>
-    <span class="line2">RCS-9687</span>
-  </div></td>
-      <td><div class="cell-two">
-    <span class="line1">李朝猛</span>
-    <span class="line2">鳳山營業所</span>
-  </div></td>
-      <td><div class="cell-two">
-    <span class="line1">2026/06/11</span>
-    <span class="line2">09:12</span>
-  </div></td>
-      <td><div class="cell-two">
-    <span class="line1">2026/07/13</span>
-    <span class="line2">2026/06/13</span>
-  </div></td>
-      <td class="right"><span class="cell-one">999,999</span></td>
-      <td><div class="cell-two">
-    <span class="line1">中和營業所</span>
-    <div class="dest-row2">
-        <span class="dest-unsent">未寄送</span>
-        <button class="btn-record" onclick="openDestModal(0)" title="選擇寄件取件日">✏️</button>
-      </div>
-  </div></td>
-      <td><span class="lic-badge lic-blue" onclick="cycleLic(0)" title="點擊切換">購入</span><div class="line2" style="margin-top:2px;">新店總部(自取)</div></td>
-      <td class="center"><button class="btn-upload" onclick="openUploadModal(&#39;P2026010011&#39;,&#39;RCS-9687&#39;)">⬆ 上傳</button></td>
-      <td class="right"><div class="cell-two" style="align-items:flex-end;"><span class="cell-one">120,000</span><span class="line2" style="color:#aaa;">125,000</span></div></td>
-      <td><span class="cell-one">2026/07/18</span></td>
-      <td class="center" style="white-space:nowrap;">
-        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 0;">
-          <button class="btn-detail" style="width:54px;" onclick="openEditApplyModal(0)">編輯</button>
-          <button class="btn-detail" disabled="" style="width:54px;opacity:0.35;cursor:not-allowed;" title="發票已開立，不可退回">退回</button>
-        </div>
-      </td>
-    </tr><tr>
-      <td class="center"><button class="btn-detail" onclick="openDetailModal(&#39;P202511001&#39;,&#39;RDL-3196&#39;)">列印</button></td>
-      <td><div class="cell-two">
-    <div style="display:flex;align-items:center;"><span class="line1">P202511001</span><button class="btn-record" onclick="alert(&#39;即將前往訂單明細頁&#39;)" title="查看訂單明細" style="margin-left:3px;">🔍</button></div>
-    <span class="line2">RDL-3196</span>
-  </div></td>
-      <td><div class="cell-two">
-    <span class="line1">張志豪</span>
-    <span class="line2">西屯營業所</span>
-  </div></td>
-      <td><div class="cell-two">
-    <span class="line1">2026/06/06</span>
-    <span class="line2">16:55</span>
-  </div></td>
-      <td><div class="cell-two">
-    <span class="line1">2026/06/08</span>
-    <span class="line2">2026/06/08</span>
-  </div></td>
-      <td class="right"><span class="cell-one">250,000</span></td>
-      <td><div class="cell-two">
-    <span class="line1">鳳山營業所</span>
-    <div class="dest-row2">
-        <span class="line2">2026/06/10</span>
-        <button class="btn-record" onclick="openDestModal(1)" title="修改寄件取件日">✏️</button>
-      </div>
-  </div></td>
-      <td><span class="lic-badge lic-red" onclick="cycleLic(1)" title="點擊切換">報廢</span><div class="line2" style="margin-top:2px;">高雄</div></td>
-      <td class="center"><button class="btn-upload" onclick="openUploadModal(&#39;P202511001&#39;,&#39;RDL-3196&#39;)">⬆ 上傳</button></td>
-      <td class="right"><div class="cell-two" style="align-items:flex-end;"><span class="cell-one">200,000</span><span class="line2" style="color:#aaa;">200,000</span></div></td>
-      <td><span class="cell-one">2026/06/12</span></td>
-      <td class="center" style="white-space:nowrap;">
-        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 0;">
-          <button class="btn-detail" style="width:54px;" onclick="openEditApplyModal(1)">編輯</button>
-          <button class="btn-detail" disabled="" style="width:54px;opacity:0.35;cursor:not-allowed;" title="發票已開立，不可退回">退回</button>
-        </div>
-      </td>
-    </tr><tr class="row-overdue">
-      <td class="center"><button class="btn-issue" onclick="openModal(&#39;P202511002&#39;,&#39;ABC-1234&#39;,&#39;2026/06/03&#39;,false)">開立</button></td>
-      <td><div class="cell-two">
-    <div style="display:flex;align-items:center;"><span class="line1">P202511002</span><button class="btn-record" onclick="alert(&#39;即將前往訂單明細頁&#39;)" title="查看訂單明細" style="margin-left:3px;">🔍</button></div>
-    <span class="line2">ABC-1234</span>
-  </div></td>
-      <td><div class="cell-two">
-    <span class="line1">黃雅婷</span>
-    <span class="line2">鳳山營業所</span>
-  </div></td>
-      <td><div class="cell-two">
-    <span class="line1">2026/06/01</span>
-    <span class="line2">09:00</span>
-  </div></td>
-      <td><div class="cell-two">
-    <span class="line1">2026/06/03</span>
-    <span class="line2-red">未開立</span>
-  </div></td>
-      <td class="right"><span class="cell-one">480,000</span></td>
-      <td><div class="cell-two">
-    <span class="line1">鳳山營業所</span>
-    <div class="dest-row2">
-        <span class="dest-unsent">未寄送</span>
-        <button class="btn-record" onclick="openDestModal(2)" title="選擇寄件取件日">✏️</button>
-      </div>
-  </div></td>
-      <td><span class="lic-badge lic-red" onclick="cycleLic(2)" title="點擊切換">逕行註銷</span><div class="line2" style="margin-top:2px;">高雄</div></td>
-      <td class="center"><button class="btn-upload" onclick="openUploadModal(&#39;P202511002&#39;,&#39;ABC-1234&#39;)">⬆ 上傳</button></td>
-      <td class="right"><div class="cell-two" style="align-items:flex-end;"><span class="cell-one">360,000</span><span class="line2" style="color:#aaa;">360,000</span></div></td>
-      <td><span class="cell-one">2026/06/08</span></td>
-      <td class="center" style="white-space:nowrap;">
-        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 0;">
-          <button class="btn-detail" style="width:54px;" onclick="openEditApplyModal(2)">編輯</button>
-          <button class="btn-detail" style="width:54px;color:#d32f2f;border-color:#d32f2f;" onclick="openRejectModal(2)">退回</button>
-        </div>
-      </td>
-    </tr><tr class="row-overdue">
-      <td class="center"><button class="btn-issue" onclick="openModal(&#39;P202511001&#39;,&#39;RFC-3197&#39;,&#39;2026/05/30&#39;,false)">開立</button></td>
-      <td><div class="cell-two">
-    <div style="display:flex;align-items:center;"><span class="line1">P202511001</span><button class="btn-record" onclick="alert(&#39;即將前往訂單明細頁&#39;)" title="查看訂單明細" style="margin-left:3px;">🔍</button></div>
-    <span class="line2">RFC-3197</span>
-  </div></td>
-      <td><div class="cell-two">
-    <span class="line1">吳建國</span>
-    <span class="line2">鳳山營業所</span>
-  </div></td>
-      <td><div class="cell-two">
-    <span class="line1">2026/05/29</span>
-    <span class="line2">11:03</span>
-  </div></td>
-      <td><div class="cell-two">
-    <span class="line1">2026/05/30</span>
-    <span class="line2-red">未開立</span>
-  </div></td>
-      <td class="right"><span class="cell-one">310,000</span></td>
-      <td><div class="cell-two">
-    <span class="line1">樹林營業所</span>
-    <div class="dest-row2">
-        <span class="dest-unsent">未寄送</span>
-        <button class="btn-record" onclick="openDestModal(3)" title="選擇寄件取件日">✏️</button>
-      </div>
-  </div></td>
-      <td><span class="lic-badge lic-red" onclick="cycleLic(3)" title="點擊切換">停駛</span><div class="line2" style="margin-top:2px;">士林營業所</div></td>
-      <td class="center"><button class="btn-upload" onclick="openUploadModal(&#39;P202511001&#39;,&#39;RFC-3197&#39;)">⬆ 上傳</button></td>
-      <td class="right"><span class="cell-one muted">--</span></td>
-      <td><span class="cell-one muted">--</span></td>
-      <td class="center" style="white-space:nowrap;">
-        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 0;">
-          <button class="btn-detail" style="width:54px;" onclick="openEditApplyModal(3)">編輯</button>
-          <button class="btn-detail" style="width:54px;color:#d32f2f;border-color:#d32f2f;" onclick="openRejectModal(3)">退回</button>
-        </div>
-      </td>
-    </tr><tr>
-      <td class="center"><button class="btn-detail" onclick="openDetailModal(&#39;P202511001&#39;,&#39;RDY-3195&#39;)">列印</button></td>
-      <td><div class="cell-two">
-    <div style="display:flex;align-items:center;"><span class="line1">P202511001</span><button class="btn-record" onclick="alert(&#39;即將前往訂單明細頁&#39;)" title="查看訂單明細" style="margin-left:3px;">🔍</button></div>
-    <span class="line2">RDY-3195</span>
-  </div></td>
-      <td><div class="cell-two">
-    <span class="line1">林美華</span>
-    <span class="line2">樹林營業所</span>
-  </div></td>
-      <td><div class="cell-two">
-    <span class="line1">2026/05/26</span>
-    <span class="line2">14:20</span>
-  </div></td>
-      <td><div class="cell-two">
-    <span class="line1">2026/05/28</span>
-    <span class="line2">2026/05/28</span>
-  </div></td>
-      <td class="right"><span class="cell-one">470,000</span></td>
-      <td><div class="cell-two">
-    <span class="line1">樹林營業所</span>
-    <div class="dest-row2">
-        <span class="dest-unsent">未寄送</span>
-        <button class="btn-record" onclick="openDestModal(4)" title="選擇寄件取件日">✏️</button>
-      </div>
-  </div></td>
-      <td><span class="lic-badge lic-red" onclick="cycleLic(4)" title="點擊切換">牌照更換</span><div class="line2" style="margin-top:2px;">士林營業所</div></td>
-      <td class="center"><button class="btn-upload" onclick="openUploadModal(&#39;P202511001&#39;,&#39;RDY-3195&#39;)">⬆ 上傳</button></td>
-      <td class="right"><div class="cell-two" style="align-items:flex-end;"><span class="cell-one">380,000</span><span class="line2" style="color:#aaa;">375,000</span></div></td>
-      <td><span class="cell-one">2026/06/03</span></td>
-      <td class="center" style="white-space:nowrap;">
-        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 0;">
-          <button class="btn-detail" style="width:54px;" onclick="openEditApplyModal(4)">編輯</button>
-          <button class="btn-detail" disabled="" style="width:54px;opacity:0.35;cursor:not-allowed;" title="發票已開立，不可退回">退回</button>
-        </div>
-      </td>
-    </tr><tr>
-      <td class="center"><button class="btn-detail" onclick="openDetailModal(&#39;P202511001&#39;,&#39;RDK-3193&#39;)">列印</button></td>
-      <td><div class="cell-two">
-    <div style="display:flex;align-items:center;"><span class="line1">P202511001</span><button class="btn-record" onclick="alert(&#39;即將前往訂單明細頁&#39;)" title="查看訂單明細" style="margin-left:3px;">🔍</button></div>
-    <span class="line2">RDK-3193</span>
-  </div></td>
-      <td><div class="cell-two">
-    <span class="line1">王小明</span>
-    <span class="line2">士林營業所</span>
-  </div></td>
-      <td><div class="cell-two">
-    <span class="line1">2026/05/26</span>
-    <span class="line2">10:45</span>
-  </div></td>
-      <td><div class="cell-two">
-    <span class="line1">2026/05/28</span>
-    <span class="line2">2026/05/29</span>
-  </div></td>
-      <td class="right"><span class="cell-one">541,000</span></td>
-      <td><div class="cell-two">
-    <span class="line1">樹林營業所</span>
-    <div class="dest-row2">
-        <span class="dest-unsent">未寄送</span>
-        <button class="btn-record" onclick="openDestModal(5)" title="選擇寄件取件日">✏️</button>
-      </div>
-  </div></td>
-      <td><span class="lic-badge lic-green" onclick="cycleLic(5)" title="點擊切換">出售</span><div class="line2" style="margin-top:2px;">士林營業所</div></td>
-      <td class="center"><button class="btn-download" onclick="alert(&#39;下載：繳銷書_RDK3193.pdf&#39;)">⬇ 下載</button></td>
-      <td class="right"><div class="cell-two" style="align-items:flex-end;"><span class="cell-one">430,000</span><span class="line2" style="color:#aaa;">430,000</span></div></td>
-      <td><span class="cell-one">2026/06/05</span></td>
-      <td class="center" style="white-space:nowrap;">
-        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 0;">
-          <button class="btn-detail" style="width:54px;" onclick="openEditApplyModal(5)">編輯</button>
-          <button class="btn-detail" disabled="" style="width:54px;opacity:0.35;cursor:not-allowed;" title="發票已開立，不可退回">退回</button>
-        </div>
-      </td>
-    </tr><tr>
-      <td class="center"><button class="btn-detail" onclick="openDetailModal(&#39;P202511001&#39;,&#39;RCG-3192&#39;)">列印</button></td>
-      <td><div class="cell-two">
-    <div style="display:flex;align-items:center;"><span class="line1">P202511001</span><button class="btn-record" onclick="alert(&#39;即將前往訂單明細頁&#39;)" title="查看訂單明細" style="margin-left:3px;">🔍</button></div>
-    <span class="line2">RCG-3192</span>
-  </div></td>
-      <td><div class="cell-two">
-    <span class="line1">陳大偉</span>
-    <span class="line2">鳳山營業所</span>
-  </div></td>
-      <td><div class="cell-two">
-    <span class="line1">2026/05/26</span>
-    <span class="line2">08:00</span>
-  </div></td>
-      <td><div class="cell-two">
-    <span class="line1">2026/05/28</span>
-    <span class="line2">2026/05/29</span>
-  </div></td>
-      <td class="right"><span class="cell-one">900,000</span></td>
-      <td><div class="cell-two">
-    <span class="line1">鳳山營業所</span>
-    <div class="dest-row2">
-        <span class="line2">2026/06/03</span>
-        <button class="btn-record" onclick="openDestModal(6)" title="修改寄件取件日">✏️</button>
-      </div>
-  </div></td>
-      <td><span class="lic-badge lic-green" onclick="cycleLic(6)" title="點擊切換">出售</span><div class="line2" style="margin-top:2px;">高雄</div></td>
-      <td class="center"><button class="btn-download" onclick="alert(&#39;下載：繳銷書_RCG3192.pdf&#39;)">⬇ 下載</button></td>
-      <td class="right"><div class="cell-two" style="align-items:flex-end;"><span class="cell-one">720,000</span><span class="line2" style="color:#aaa;">715,000</span></div></td>
-      <td><span class="cell-one">2026/06/01</span></td>
-      <td class="center" style="white-space:nowrap;">
-        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 0;">
-          <button class="btn-detail" disabled="" style="opacity:0.35;cursor:not-allowed;width:54px;" title="發票已開立、車證已寄送且牌照已繳銷或出售，不可再編輯">編輯</button>
-          <button class="btn-detail" disabled="" style="width:54px;opacity:0.35;cursor:not-allowed;" title="發票已開立，不可退回">退回</button>
-        </div>
-      </td>
-    </tr></tbody>
+      <tbody id="tableBody"></tbody>
     </table>
   </div>
 </div>
@@ -649,10 +388,6 @@ col.c-cancel-combo { width: 130px; }
         <span class="guide-text">點擊出售單號旁的放大鏡圖示，可前往<strong>訂單明細頁</strong>。</span>
       </li>
       <li class="guide-item">
-        <span class="guide-icon">✏️</span>
-        <span class="guide-text">點擊車證欄位的 ✏️ 圖示，可更新車證<strong>寄件或取件日期</strong>。</span>
-      </li>
-      <li class="guide-item">
         <span class="guide-icon">📋</span>
         <span class="guide-text">牌照繳銷單可至<strong>出售管理</strong>上傳。由車管繳銷之車輛<strong>無須上傳</strong>。</span>
       </li>
@@ -662,31 +397,15 @@ col.c-cancel-combo { width: 130px; }
       </li>
       <li class="guide-item">
         <span class="guide-icon">🔒</span>
-        <span class="guide-text">發票已開、車證已寄，且牌照已<strong>繳銷/出售</strong>者，不可再異動。</span>
+        <span class="guide-text">發票已開立，且牌照已<strong>繳銷/出售</strong>者，不可再異動。</span>
+      </li>
+      <li class="guide-item">
+        <span class="guide-icon">📨</span>
+        <span class="guide-text">已開立發票，且牌照狀態<strong>未繳銷</strong>者，若尚未上傳<strong>牌照繳銷單</strong>，系統將於<strong>每月20日</strong>發信通知業代及營業(發票管理人)。</span>
       </li>
     </ul>
     <div class="modal-footer" style="margin-top:1.25rem;">
       <button class="btn-confirm" onclick="closeGuideModal()">了解了</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="destModal">
-  <div class="modal" style="width:320px;">
-    <div class="modal-header">
-      <span style="font-size:20px;">📦</span>
-      <span class="modal-title">選擇寄件取件日</span>
-      <button class="modal-close" onclick="closeDestModal()">×</button>
-    </div>
-    <div class="modal-meta">
-      <span>寄送地點：<strong id="destModalDest"></strong></span>
-    </div>
-    <div class="modal-body" style="margin-bottom:0.75rem;">
-      <input type="date" id="destModalDateInput" style="width:100%; height:34px; border:1px solid #ccc; border-radius:6px; padding:0 10px; font-size:13px; outline:none;">
-    </div>
-    <div class="modal-footer">
-      <button class="btn-cancel" onclick="closeDestModal()">取消</button>
-      <button class="btn-confirm" onclick="confirmDestModal()">確認</button>
     </div>
   </div>
 </div>
@@ -784,27 +503,29 @@ col.c-cancel-combo { width: 130px; }
             <label>車證寄送地點：</label>
             <div class="apply-loc-controls">
               <div class="radio-loc-group">
-                <label class="radio-loc-opt"><input type="radio" name="permitCat" value="BRANCH" onchange="onPermitCatChange()" checked=""> 營業所</label>
+                <label class="radio-loc-opt"><input type="radio" name="permitCat" value="BRANCH" onchange="onPermitCatChange()" checked=""> <span class="radio-loc-text">營業所</span></label>
                 <select class="loc-select" id="am-permitBranch">
                   <option value="">請選擇營業所</option>
                   <option>士林營業所</option><option>中和營業所</option><option>樹林營業所</option><option>西屯營業所</option><option>鳳山營業所</option>
                 </select>
               </div>
               <div class="radio-loc-group">
-                <label class="radio-loc-opt"><input type="radio" name="permitCat" value="AGENT" onchange="onPermitCatChange()"> 代辦中心</label>
+                <label class="radio-loc-opt"><input type="radio" name="permitCat" value="AGENT" onchange="onPermitCatChange()"> <span class="radio-loc-text">代辦中心</span></label>
                 <select class="loc-select" id="am-permitAgent" disabled="">
                   <option value="">請選擇代辦中心</option>
                   <option value="36">八德</option>
+                  <option value="43">樹林</option>
                   <option value="37">中壢</option>
                   <option value="38">臺中</option>
-                  <option value="39">高雄</option>
-                  <option value="40">花蓮</option>
                   <option value="41">臺南</option>
-                  <option value="43">樹林</option>
+                  <option value="39">高雄</option>
+                  <option value="45">宜蘭</option>
+                  <option value="40">花蓮</option>
+                  <option value="44">臺東</option>
                 </select>
               </div>
               <div class="radio-loc-group">
-                <label class="radio-loc-opt"><input type="radio" name="permitCat" value="HQ" onchange="onPermitCatChange()"> 新店總部(自取)</label>
+                <label class="radio-loc-opt"><input type="radio" name="permitCat" value="HQ" onchange="onPermitCatChange()"> <span class="radio-loc-text">新店自取</span></label>
               </div>
             </div>
             <span class="apply-loc-err" id="am-permit-err"></span>
@@ -815,27 +536,19 @@ col.c-cancel-combo { width: 130px; }
             <label>牌照繳銷地點：</label>
             <div class="apply-loc-controls">
               <div class="radio-loc-group">
-                <label class="radio-loc-opt"><input type="radio" name="revokeCat" value="BRANCH" onchange="onRevokeCatChange()" checked=""> 營業所</label>
-                <select class="loc-select" id="am-revokeBranch">
-                  <option value="">請選擇營業所</option>
-                  <option>士林營業所</option><option>中和營業所</option><option>樹林營業所</option><option>西屯營業所</option><option>鳳山營業所</option>
-                </select>
-              </div>
-              <div class="radio-loc-group">
-                <label class="radio-loc-opt"><input type="radio" name="revokeCat" value="AGENT" onchange="onRevokeCatChange()"> 代辦中心</label>
-                <select class="loc-select" id="am-revokeAgent" disabled="">
+                <label class="radio-loc-opt"><input type="radio" name="revokeCat" value="AGENT" checked disabled> <span class="radio-loc-text">代辦中心</span></label>
+                <select class="loc-select" id="am-revokeAgent">
                   <option value="">請選擇代辦中心</option>
                   <option value="36">八德</option>
+                  <option value="43">樹林</option>
                   <option value="37">中壢</option>
                   <option value="38">臺中</option>
-                  <option value="39">高雄</option>
-                  <option value="40">花蓮</option>
                   <option value="41">臺南</option>
-                  <option value="43">樹林</option>
+                  <option value="39">高雄</option>
+                  <option value="45">宜蘭</option>
+                  <option value="40">花蓮</option>
+                  <option value="44">臺東</option>
                 </select>
-              </div>
-              <div class="radio-loc-group">
-                <label class="radio-loc-opt"><input type="radio" name="revokeCat" value="HQ" onchange="onRevokeCatChange()"> 新店總部(自取)</label>
               </div>
             </div>
             <span class="apply-loc-err" id="am-revoke-err"></span>
@@ -883,7 +596,7 @@ col.c-cancel-combo { width: 130px; }
           <span class="err-msg" id="loan-amt-err-0"></span>
         </div>
         <div class="apply-field">
-          <label>同意書核貸金額：</label>
+          <label>貸款核定實撥金額：</label>
           <input type="number" id="loan-approved-0" value="375000" placeholder="請輸入金額" min="0">
           <span class="err-msg" id="loan-approved-err-0"></span>
         </div>
@@ -907,7 +620,7 @@ col.c-cancel-combo { width: 130px; }
 
     <div class="apply-modal-footer">
       <div class="apply-footer-warning">
-        ⚠️ 申請開立<span style="color:#c0392b;font-weight:600;">當日發票</span>，請務必於 <strong>13:00</strong> 前完成申請；若逾時申請，請自行電洽營業單位
+        ⚠️ 開立<span style="color:#c0392b;font-weight:600;">當日發票</span>，請務必於 <strong>13:00</strong> 前完成申請；若逾時申請，請自行電洽營業單位
       </div>
       <div class="apply-footer-btns">
         <button class="btn-cancel" onclick="closeApplyModal()">取消</button>
@@ -956,12 +669,15 @@ col.c-cancel-combo { width: 130px; }
   </div>
 </div>
 
+<!-- 貸款入款 Popup：與 A 專案共用，邏輯與樣式全部封裝在 loan-wire-popup.js 內 -->
+<script src="https://tsungkailu.github.io/sharedComponent/loan-wire-popup.js" defer></script>
+<loan-wire-popup id="loanWirePopup"></loan-wire-popup>
+
 <script>
 function isEditLocked(r) {
   const invoiceDone = !!r.actualDate;
-  const destSent    = !!r.destDate;
   const licDoneOrSold = r.licCode === 'D' || r.licCode === '5';
-  return invoiceDone && destSent && licDoneOrSold;
+  return invoiceDone && licDoneOrSold;
 }
 
 const LICENSE_STATUSES = [
@@ -1019,7 +735,7 @@ const data = [
   { order:'P2026010011', plate:'RCS-9687', licCode:'0',
     applyTs: tsOffset(-2, '09:12'), targetDate: dOffset(30), actualDate:'',
     invoiceAmt:999999,
-    dest:'中和營業所', destDate:'', cancel:'新店總部(自取)',
+    dest:'中和營業所', cancel:'八德',
     loanAmt:120000, approvedAmt:125000, disbursedDate: dOffset(35),
     person:'李朝猛', branch:'鳳山營業所', licFile:'' },
 
@@ -1027,7 +743,7 @@ const data = [
   { order:'P202511002', plate:'ABC-1234', licCode:'9',
     applyTs: tsOffset(-12, '09:00'), targetDate: dOffset(-10), actualDate:'',
     invoiceAmt:480000,
-    dest:'鳳山營業所', destDate:'', cancel:'高雄',
+    dest:'高雄', cancel:'中壢',
     loanAmt:360000, approvedAmt:360000, disbursedDate: dOffset(-5),
     person:'黃雅婷', branch:'鳳山營業所', licFile:'' },
 
@@ -1035,7 +751,7 @@ const data = [
   { order:'P202511001', plate:'RFC-3197', licCode:'G',
     applyTs: tsOffset(-15, '11:03'), targetDate: dOffset(-14), actualDate:'',
     invoiceAmt:310000,
-    dest:'樹林營業所', destDate:'', cancel:'士林營業所',
+    dest:'新店自取', cancel:'臺中',
     loanAmt:null, approvedAmt:null, disbursedDate:'',
     person:'吳建國', branch:'鳳山營業所', licFile:'' },
 
@@ -1043,15 +759,15 @@ const data = [
   { order:'P202511001', plate:'RDY-3195', licCode:'1',
     applyTs: tsOffset(-18, '14:20'), targetDate: dOffset(-16), actualDate: dOffset(-16),
     invoiceAmt:470000,
-    dest:'樹林營業所', destDate:'', cancel:'士林營業所',
+    dest:'樹林營業所', cancel:'臺南',
     loanAmt:380000, approvedAmt:375000, disbursedDate: dOffset(-10),
     person:'林美華', branch:'樹林營業所', licFile:'' },
 
-  // 5. 已開立，車證未寄送，出售（可編輯，出售但無 destDate，未鎖定）
+  // 5. 已開立，車證未寄送，出售（可編輯，未鎖定）
   { order:'P202511001', plate:'RDK-3193', licCode:'5',
     applyTs: tsOffset(-18, '10:45'), targetDate: dOffset(-16), actualDate: dOffset(-15),
     invoiceAmt:541000,
-    dest:'樹林營業所', destDate:'', cancel:'士林營業所',
+    dest:'臺南', cancel:'高雄',
     loanAmt:430000, approvedAmt:430000, disbursedDate: dOffset(-8),
     person:'王小明', branch:'士林營業所', licFile:'繳銷書_RDK3193.pdf' },
 
@@ -1059,7 +775,7 @@ const data = [
   { order:'P202511001', plate:'RDR-3194', licCode:'D',
     applyTs: tsOffset(0, '08:30'), targetDate: dOffset(0), actualDate:'',
     invoiceAmt:695000,
-    dest:'鳳山營業所', destDate:'', cancel:'--',
+    dest:'鳳山營業所', cancel:'--',
     loanAmt:null, approvedAmt:null, disbursedDate:'',
     person:'陳大偉', branch:'中和營業所', licFile:'' },
 
@@ -1067,7 +783,7 @@ const data = [
   { order:'P202511001', plate:'RDL-3196', licCode:'4',
     applyTs: tsOffset(-7, '16:55'), targetDate: dOffset(-5), actualDate: dOffset(-5),
     invoiceAmt:250000,
-    dest:'鳳山營業所', destDate: dOffset(-3), cancel:'高雄',
+    dest:'新店自取', cancel:'宜蘭',
     loanAmt:200000, approvedAmt:200000, disbursedDate: dOffset(-1),
     person:'張志豪', branch:'西屯營業所', licFile:'' },
 
@@ -1075,7 +791,7 @@ const data = [
   { order:'P202511001', plate:'RCG-3192', licCode:'5',
     applyTs: tsOffset(-18, '08:00'), targetDate: dOffset(-16), actualDate: dOffset(-15),
     invoiceAmt:900000,
-    dest:'鳳山營業所', destDate: dOffset(-10), cancel:'高雄',
+    dest:'西屯營業所', cancel:'花蓮',
     loanAmt:720000, approvedAmt:715000, disbursedDate: dOffset(-12),
     person:'陳大偉', branch:'鳳山營業所', licFile:'繳銷書_RCG3192.pdf' },
 ];
@@ -1089,12 +805,24 @@ function cellRight(val) {
     : `<span class="cell-one muted">--</span>`;
 }
 
-// 出售單號（上）/ 車牌號碼（下，灰色）
+// 預計撥款日 + 貸款入款操作（兩行：日期 / 按鈕或已入款狀態）
+function renderDisbursement(r, rowIdx) {
+  if (r.loanAmt == null) return '<span class="cell-one muted">--</span>';
+  const sub = r.loanPaidAt
+    ? `<span class="line2" style="color:#1a73e8;">${r.loanPaidAt} 已入款</span>`
+    : `<button class="btn-issue" style="margin-top:2px;padding:2px 8px;font-size:11px;" onclick="openLoanWireForRow(${rowIdx})">貸款入款</button>`;
+  return `<div class="cell-two">
+    <span class="line1">${r.disbursedDate || '--'}</span>
+    ${sub}
+  </div>`;
+}
+
+// 車牌號碼（上，重點）/ 出售單號（下，灰色）
 function renderOrderPlate(order, plate, hasActual) {
   const icon = `<button class="btn-record" onclick="alert('即將前往訂單明細頁')" title="查看訂單明細" style="margin-left:3px;">🔍</button>`;
   return `<div class="cell-two">
-    <div style="display:flex;align-items:center;"><span class="line1">${order}</span>${icon}</div>
-    <span class="line2">${plate}</span>
+    <span class="line1">${plate}</span>
+    <div style="display:flex;align-items:center;"><span class="line2">${order}</span>${icon}</div>
   </div>`;
 }
 
@@ -1129,20 +857,8 @@ function renderLicBadge(code, rowIdx) {
   return `<span class="lic-badge ${s.cls}" onclick="cycleLic(${rowIdx})" title="點擊切換">${s.label}</span>`;
 }
 
-function renderDestCell(dest, destDate, rowIdx) {
-  const dateDisplay = destDate
-    ? `<div class="dest-row2">
-        <span class="line2">${destDate}</span>
-        <button class="btn-record" onclick="openDestModal(${rowIdx})" title="修改寄件取件日">✏️</button>
-      </div>`
-    : `<div class="dest-row2">
-        <span class="dest-unsent">未寄送</span>
-        <button class="btn-record" onclick="openDestModal(${rowIdx})" title="選擇寄件取件日">✏️</button>
-      </div>`;
-  return `<div class="cell-two">
-    <span class="line1">${dest || '--'}</span>
-    ${dateDisplay}
-  </div>`;
+function renderDestCell(dest) {
+  return `<span class="cell-one">${dest || '<span class="muted">--</span>'}</span>`;
 }
 
 function renderLicFileBtn(licCode, licFile, order, plate) {
@@ -1221,6 +937,52 @@ function confirmUpload() {
   renderTable(displayData);
 }
 
+// ── 貸款入款（共用元件 <loan-wire-popup>） ──
+let loanWireRowIdx = null;
+
+// B 的資料模型沒有買受人/放款機構等欄位，這裡用一組假資料對照表模擬
+// （buyerId 故意對齊 loan-wire-popup.js 內建假匯款資料的測試 ID，方便直接查到多筆可選紀錄）
+const LOAN_MOCK_PROFILES = [
+  { buyerName: '王小明', buyerId: 'A123456789', category: '尾款', institution: '中國信託', period: '36', rate: '2.5' },
+  { buyerName: '李大華', buyerId: 'B987654321', category: '尾款', institution: '台新銀行', period: '48', rate: '2.8' },
+  { buyerName: '陳小美', buyerId: 'C112233445', category: '尾款', institution: '玉山銀行', period: '24', rate: '2.2' },
+  { buyerName: '張志豪', buyerId: 'D556677889', category: '尾款', institution: '國泰世華', period: '60', rate: '3.0' },
+];
+
+function openLoanWireForRow(rowIdx) {
+  loanWireRowIdx = rowIdx;
+  const r = displayData[rowIdx];
+  const carAmt = r.loanAmt || 0;
+  const overAmt = Math.max((r.approvedAmt || 0) - (r.loanAmt || 0), 0);
+  const mock = LOAN_MOCK_PROFILES[rowIdx % LOAN_MOCK_PROFILES.length];
+  document.getElementById('loanWirePopup').open({
+    orderNo: r.order,
+    plate: r.plate,
+    buyerName: mock.buyerName,
+    buyerId: mock.buyerId,
+    category: mock.category,
+    amount: carAmt + overAmt,
+    carAmt: carAmt,
+    overAmt: overAmt,
+    institution: mock.institution,
+    period: mock.period,
+    rate: mock.rate,
+  });
+}
+
+// 監聽元件回傳結果，把資料寫回 B 自己的 data/displayData 並重新渲染（只需綁定一次）
+document.getElementById('loanWirePopup').addEventListener('loan-wire-confirmed', (e) => {
+  const r = displayData[loanWireRowIdx];
+  if (!r) return;
+  const now = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  r.loanPaidAt = `${now.getFullYear()}/${pad(now.getMonth() + 1)}/${pad(now.getDate())}`;
+  // 同步寫回 data 原始陣列
+  const orig = data.find(d => d.order === r.order && d.plate === r.plate);
+  if (orig) orig.loanPaidAt = r.loanPaidAt;
+  renderTable(displayData);
+});
+
 function renderInvoiceBtn(hasActual, earlyFlag, order, plate, target, rowIdx) {
   if (hasActual) return `<button class="btn-detail" onclick="openDetailModal('${order}','${plate}')">列印</button>`;
   if (earlyFlag) return `<button class="btn-issue" onclick="openModal('${order}','${plate}','${target}',true)">開立</button>`;
@@ -1283,17 +1045,16 @@ function renderTable(rows) {
       <td>${renderApplyTs(r.applyTs)}</td>
       <td>${renderDates(r.targetDate, r.actualDate)}</td>
       <td class="right">${cellRight(r.invoiceAmt)}</td>
-      <td>${renderDestCell(r.dest, r.destDate, i)}</td>
-      <td>${renderLicBadge(r.licCode, i)}<div class="line2" style="margin-top:2px;">${r.licCode !== 'D' && r.cancel ? r.cancel : '<span class="muted">--</span>'}</div></td>
-      <td class="center">${renderLicFileBtn(r.licCode, r.licFile, r.order, r.plate)}</td>
       <td class="right">${hasLoan
         ? `<div class="cell-two" style="align-items:flex-end;">${cellRight(r.loanAmt)}<span class="line2" style="color:#aaa;">${r.approvedAmt != null ? r.approvedAmt.toLocaleString() : '--'}</span></div>`
         : '<span class="cell-one muted">--</span>'}</td>
-      <td>${hasLoan ? cell(r.disbursedDate) : '<span class="cell-one muted">--</span>'}</td>
+      <td>${renderDisbursement(r, i)}</td>
+      <td>${renderDestCell(r.dest)}<div class="line2" style="margin-top:2px;">${cancelVal && cancelVal !== '--' ? cancelVal : '<span class="muted">--</span>'}</div></td>
+      <td>${renderLicBadge(r.licCode, i)}<div style="margin-top:5px;">${renderLicFileBtn(r.licCode, r.licFile, r.order, r.plate)}</div></td>
       <td class="center" style="white-space:nowrap;">
         <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 0;">
           ${isEditLocked(r)
-            ? '<button class="btn-detail" disabled style="opacity:0.35;cursor:not-allowed;width:54px;" title="發票已開立、車證已寄送且牌照已繳銷或出售，不可再編輯">編輯</button>'
+            ? '<button class="btn-detail" disabled style="opacity:0.35;cursor:not-allowed;width:54px;" title="發票已開立且牌照已繳銷或出售，不可再編輯">編輯</button>'
             : `<button class="btn-detail" style="width:54px;" onclick="openEditApplyModal(${i})">編輯</button>`
           }
           ${hasActual
@@ -1319,15 +1080,12 @@ function applyFilter() {
   const s   = document.getElementById('statusFilter').value;
   const o   = document.getElementById('orderFilter').value.trim().toLowerCase();
   const p   = document.getElementById('plateFilter').value.trim().toLowerCase();
-  const dst = document.getElementById('destFilter').value;
   const lic = document.getElementById('licFilter').value;
   const filtered = data.filter(r => {
     if (s === '已開立'  && !r.actualDate) return false;
     if (s === '申請中'  &&  r.actualDate) return false;
     if (o && !r.order.toLowerCase().includes(o)) return false;
     if (p && !r.plate.toLowerCase().includes(p)) return false;
-    if (dst === '待寄件' &&  r.destDate) return false;
-    if (dst === '已寄送' && !r.destDate) return false;
     if (lic === '未繳銷或出售' && (r.licCode === 'D' || r.licCode === '5')) return false;
     return true;
   });
@@ -1338,7 +1096,6 @@ function clearFilter() {
   document.getElementById('statusFilter').value = '全部';
   document.getElementById('orderFilter').value  = '';
   document.getElementById('plateFilter').value  = '';
-  document.getElementById('destFilter').value   = '全部';
   document.getElementById('licFilter').value    = '全部';
   renderTable(sortByApplyTs(data));
 }
@@ -1349,35 +1106,6 @@ function openGuideModal() {
 
 function closeGuideModal() {
   document.getElementById('guideModal').classList.remove('open');
-}
-
-let destModalRowIdx = null;
-
-function openDestModal(rowIdx) {
-  destModalRowIdx = rowIdx;
-  const r = displayData[rowIdx];
-  const todayFmt = dFmt(TODAY).replace(/\//g, '-');
-  document.getElementById('destModalDest').textContent = r ? (r.dest || '--') : '--';
-  document.getElementById('destModalDateInput').value = r && r.destDate ? r.destDate.replace(/\//g, '-') : todayFmt;
-  document.getElementById('destModal').classList.add('open');
-}
-
-function closeDestModal() {
-  document.getElementById('destModal').classList.remove('open');
-  destModalRowIdx = null;
-}
-
-function confirmDestModal() {
-  const val = document.getElementById('destModalDateInput').value;
-  if (!val || destModalRowIdx === null) return;
-  const [y, m, d] = val.split('-');
-  const formatted = `${y}/${m}/${d}`;
-  const r = displayData[destModalRowIdx];
-  r.destDate = formatted;
-  const orig = data.find(x => x.order === r.order && x.plate === r.plate);
-  if (orig) orig.destDate = formatted;
-  closeDestModal();
-  renderTable(displayData);
 }
 
 function openModal(order, plate, target, isEarlyOpen) {
@@ -1496,15 +1224,14 @@ function openApplyModal() {
   ['am-balance-err','am-invoiceDate-err','am-permit-err','am-revoke-err'].forEach(id => {
     const el = document.getElementById(id); if (el) el.textContent = '';
   });
-  ['am-invoiceDate','am-permitBranch','am-permitAgent','am-revokeBranch','am-revokeAgent'].forEach(id => {
+  ['am-invoiceDate','am-permitBranch','am-permitAgent','am-revokeAgent'].forEach(id => {
     const el = document.getElementById(id); if (el) el.classList.remove('err');
   });
   // reset radio
   document.querySelector('input[name=permitCat][value=BRANCH]').checked = true;
-  document.querySelector('input[name=revokeCat][value=BRANCH]').checked = true;
-  onPermitCatChange(); onRevokeCatChange();
+  onPermitCatChange();
   document.getElementById('am-permitBranch').value = '';
-  document.getElementById('am-revokeBranch').value = '';
+  document.getElementById('am-revokeAgent').value = '';
 
   // reset file state
   m.proxyPayments.forEach(p => { p.file = null; });
@@ -1612,8 +1339,8 @@ function openEditApplyModal(rowIdx) {
   // 車證寄送地點：嘗試對應現有值
   const dest = r.dest || '';
   const branchOptions = ['士林營業所','中和營業所','樹林營業所','西屯營業所','鳳山營業所'];
-  const agentMap = {'八德':'36','中壢':'37','臺中':'38','高雄':'39','花蓮':'40','臺南':'41','樹林':'43'};
-  if (dest === '新店總部(自取)') {
+  const agentMap = {'八德':'36','中壢':'37','臺中':'38','高雄':'39','花蓮':'40','臺南':'41','樹林':'43','臺東':'44','宜蘭':'45'};
+  if (dest === '新店自取') {
     document.querySelector('input[name=permitCat][value=HQ]').checked = true;
   } else if (branchOptions.includes(dest)) {
     document.querySelector('input[name=permitCat][value=BRANCH]').checked = true;
@@ -1630,26 +1357,14 @@ function openEditApplyModal(rowIdx) {
   // 牌照繳銷地點
   const cancel = r.cancel || '';
   if (r.licCode !== 'D') {
-    if (cancel === '新店總部(自取)') {
-      document.querySelector('input[name=revokeCat][value=HQ]').checked = true;
-    } else if (branchOptions.includes(cancel)) {
-      document.querySelector('input[name=revokeCat][value=BRANCH]').checked = true;
-      document.getElementById('am-revokeBranch').value = cancel;
-    } else if (agentMap[cancel]) {
-      document.querySelector('input[name=revokeCat][value=AGENT]').checked = true;
-      document.getElementById('am-revokeAgent').value = agentMap[cancel];
-    } else {
-      document.querySelector('input[name=revokeCat][value=BRANCH]').checked = true;
-      document.getElementById('am-revokeBranch').value = '';
-    }
-    onRevokeCatChange();
+    document.getElementById('am-revokeAgent').value = agentMap[cancel] || '';
   }
 
   // 清除錯誤狀態
   ['am-balance-err','am-invoiceDate-err','am-permit-err','am-revoke-err'].forEach(id => {
     const el = document.getElementById(id); if (el) el.textContent = '';
   });
-  ['am-invoiceDate','am-permitBranch','am-permitAgent','am-revokeBranch','am-revokeAgent'].forEach(id => {
+  ['am-invoiceDate','am-permitBranch','am-permitAgent','am-revokeAgent'].forEach(id => {
     const el = document.getElementById(id); if (el) el.classList.remove('err');
   });
 
@@ -1683,12 +1398,6 @@ function onPermitCatChange() {
   const cat = document.querySelector('input[name=permitCat]:checked').value;
   document.getElementById('am-permitBranch').disabled = (cat !== 'BRANCH');
   document.getElementById('am-permitAgent').disabled  = (cat !== 'AGENT');
-}
-
-function onRevokeCatChange() {
-  const cat = document.querySelector('input[name=revokeCat]:checked').value;
-  document.getElementById('am-revokeBranch').disabled = (cat !== 'BRANCH');
-  document.getElementById('am-revokeAgent').disabled  = (cat !== 'AGENT');
 }
 
 function buildProxySection(payments) {
@@ -1771,7 +1480,7 @@ function buildLoanSection(loans) {
           <span class="err-msg" id="loan-amt-err-${i}"></span>
         </div>
         <div class="apply-field">
-          <label>同意書核貸金額：</label>
+          <label>貸款核定實撥金額：</label>
           <input type="number" id="loan-approved-${i}" value="${l.approvedAmt}" placeholder="請輸入金額" min="0">
           <span class="err-msg" id="loan-approved-err-${i}"></span>
         </div>
@@ -1857,24 +1566,10 @@ function validateApplyForm() {
 
   // 牌照繳銷地點（非繳銷才驗證）
   if (applyMockData.licCode !== 'D') {
-    const revokeCat = document.querySelector('input[name=revokeCat]:checked').value;
     const revokeErr = document.getElementById('am-revoke-err');
-    let revokeValid = true;
-    if (revokeCat === 'BRANCH') {
-      const sel = document.getElementById('am-revokeBranch');
-      if (!sel.value) { revokeErr.textContent = '請選擇牌照繳銷地點'; sel.classList.add('err'); revokeValid = false; }
-      else { revokeErr.textContent = ''; sel.classList.remove('err'); }
-    } else if (revokeCat === 'AGENT') {
-      const sel = document.getElementById('am-revokeAgent');
-      if (!sel.value) { revokeErr.textContent = '請選擇牌照繳銷地點'; sel.classList.add('err'); revokeValid = false; }
-      else { revokeErr.textContent = ''; sel.classList.remove('err'); }
-    } else {
-      // HQ
-      revokeErr.textContent = '';
-      document.getElementById('am-revokeBranch').classList.remove('err');
-      document.getElementById('am-revokeAgent').classList.remove('err');
-    }
-    if (!revokeValid) valid = false;
+    const sel = document.getElementById('am-revokeAgent');
+    if (!sel.value) { revokeErr.textContent = '請選擇牌照繳銷地點'; sel.classList.add('err'); valid = false; }
+    else { revokeErr.textContent = ''; sel.classList.remove('err'); }
   }
 
   // 代付車款同意書（區塊顯示時才驗證）
@@ -1939,7 +1634,7 @@ function saveEditApply() {
   const permitCat = document.querySelector('input[name=permitCat]:checked').value;
   let permitName;
   if (permitCat === 'HQ') {
-    permitName = '新店總部(自取)';
+    permitName = '新店自取';
   } else if (permitCat === 'BRANCH') {
     permitName = document.getElementById('am-permitBranch').value;
   } else {
@@ -1948,15 +1643,8 @@ function saveEditApply() {
   }
   let revokeName = '--';
   if (m.licCode !== 'D') {
-    const revokeCat = document.querySelector('input[name=revokeCat]:checked').value;
-    if (revokeCat === 'HQ') {
-      revokeName = '新店總部(自取)';
-    } else if (revokeCat === 'BRANCH') {
-      revokeName = document.getElementById('am-revokeBranch').value;
-    } else {
-      const sel = document.getElementById('am-revokeAgent');
-      revokeName = sel.options[sel.selectedIndex].text;
-    }
+    const sel = document.getElementById('am-revokeAgent');
+    revokeName = sel.options[sel.selectedIndex].text;
   }
   const loanApproved = Number(document.getElementById('loan-approved-0').value) || null;
   const loanDate = document.getElementById('loan-date-0').value.replace(/-/g,'/');
@@ -2018,7 +1706,7 @@ function confirmSubmitted() {
   const permitCat   = document.querySelector('input[name=permitCat]:checked').value;
   let permitName;
   if (permitCat === 'HQ') {
-    permitName = '新店總部(自取)';
+    permitName = '新店自取';
   } else if (permitCat === 'BRANCH') {
     permitName = document.getElementById('am-permitBranch').value;
   } else {
@@ -2027,15 +1715,8 @@ function confirmSubmitted() {
   }
   let revokeName = '--';
   if (m.licCode !== 'D') {
-    const revokeCat = document.querySelector('input[name=revokeCat]:checked').value;
-    if (revokeCat === 'HQ') {
-      revokeName = '新店總部(自取)';
-    } else if (revokeCat === 'BRANCH') {
-      revokeName = document.getElementById('am-revokeBranch').value;
-    } else {
-      const sel = document.getElementById('am-revokeAgent');
-      revokeName = sel.options[sel.selectedIndex].text;
-    }
+    const sel = document.getElementById('am-revokeAgent');
+    revokeName = sel.options[sel.selectedIndex].text;
   }
   const loanApproved = Number(document.getElementById('loan-approved-0').value) || m.loans[0].approvedAmt;
   const loanDate     = document.getElementById('loan-date-0').value.replace(/-/g,'/');
@@ -2055,7 +1736,6 @@ function confirmSubmitted() {
     actualDate:   '',
     invoiceAmt:   m.amt,
     dest:         permitName,
-    destDate:     '',
     cancel:       revokeName,
     loanAmt:      m.loans[0].amount,
     approvedAmt:  loanApproved,
