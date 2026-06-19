@@ -49,18 +49,28 @@ col.c-lic-combo  { width: 120px; }
 col.c-loan-combo { width: 108px; }
 col.c-cancel-combo { width: 130px; }
 
-.cell-two { display: flex; flex-direction: column; justify-content: center; gap: 2px; padding: 5px 0; }
+/* 雙排儲存格：固定上/下兩列各 22px（按鈕上下各留 1px 邊距），確保跨欄位上下排垂直對齊 */
+.cell-two { display: flex; flex-direction: column; justify-content: center; height: 44px; }
+.cell-two .row-top, .cell-two .row-bot { display: flex; align-items: center; height: 22px; gap: 4px; }
 .cell-two .line1 { font-size: 12px; color: #1a1a1a; line-height: 1.3; }
 .cell-two .line2 { font-size: 11px; color: #aaa;    line-height: 1.3; }
 .line2-red { font-size: 11px; color: #d32f2f; line-height: 1.3; }
 
 .cell-one { font-size: 12px; }
 .muted { color: #bbb; }
+.cell-two .line1.muted { color: #bbb; }
 
-.btn-issue  { background: #1a73e8; color: #fff; border: none; border-radius: 5px; padding: 3px 10px; font-size: 11px; cursor: pointer; }
+.btn-issue, .btn-detail, .btn-upload, .btn-download, .btn-loan-wire {
+  height: 20px; display: inline-flex; align-items: center; justify-content: center; line-height: 1; box-sizing: border-box;
+}
+
+.btn-issue  { background: #1a73e8; color: #fff; border: none; border-radius: 5px; padding: 0 10px; font-size: 11px; cursor: pointer; }
 .btn-issue:hover  { background: #155dbe; }
-.btn-detail { background: #fff; color: #555; border: 1px solid #ccc; border-radius: 5px; padding: 3px 10px; font-size: 11px; cursor: pointer; }
+.btn-detail { background: #fff; color: #555; border: 1px solid #ccc; border-radius: 5px; padding: 0 10px; font-size: 11px; cursor: pointer; }
 .btn-detail:hover { background: #f5f5f5; }
+
+.btn-loan-wire { background: #fff; color: #f57c00; border: 1px solid #f57c00; border-radius: 5px; padding: 0 8px; font-size: 11px; cursor: pointer; white-space: nowrap; }
+.btn-loan-wire:hover { background: #fff3e0; }
 
 .lic-badge { display: inline-block; font-size: 12px; cursor: pointer; user-select: none; }
 .lic-badge:hover { opacity: .7; }
@@ -72,9 +82,9 @@ col.c-cancel-combo { width: 130px; }
 .btn-record { background: none; border: none; font-size: 11px; color: #bbb; cursor: pointer; padding: 0 2px; line-height: 1; margin-left: 3px; vertical-align: middle; flex-shrink: 0; }
 .btn-record:hover { color: #555; }
 
-.btn-upload   { background: #fff; color: #1a73e8; border: 1px solid #1a73e8; border-radius: 5px; padding: 3px 9px; font-size: 11px; cursor: pointer; white-space: nowrap; }
+.btn-upload   { background: #fff; color: #1a73e8; border: 1px solid #1a73e8; border-radius: 5px; padding: 0 9px; font-size: 11px; cursor: pointer; white-space: nowrap; }
 .btn-upload:hover   { background: #e8f0fe; }
-.btn-download { background: #fff; color: #555; border: 1px solid #ccc; border-radius: 5px; padding: 3px 9px; font-size: 11px; cursor: pointer; white-space: nowrap; }
+.btn-download { background: #fff; color: #555; border: 1px solid #ccc; border-radius: 5px; padding: 0 9px; font-size: 11px; cursor: pointer; white-space: nowrap; }
 .btn-download:hover { background: #f5f5f5; }
 .btn-no-action { font-size: 11px; color: #ccc; }
 
@@ -325,7 +335,7 @@ col.c-cancel-combo { width: 130px; }
           <th>指定開立日期<br>實際開立日期</th>
           <th class="right">發票金額</th>
           <th class="right">車貸金額<br>核貸總額</th>
-          <th>預計撥款日</th>
+          <th>預計撥款日<br>貸款入款日</th>
           <th>車證寄送處<br>牌照繳銷處</th>
           <th>牌照狀態<br>牌照繳銷單</th>
           <th class="center">操作</th>
@@ -808,12 +818,12 @@ function cellRight(val) {
 // 預計撥款日 + 貸款入款操作（兩行：日期 / 按鈕或已入款狀態）
 function renderDisbursement(r, rowIdx) {
   if (r.loanAmt == null) return '<span class="cell-one muted">--</span>';
-  const sub = r.loanPaidAt
-    ? `<span class="line2" style="color:#1a73e8;">${r.loanPaidAt} 已入款</span>`
-    : `<button class="btn-issue" style="margin-top:2px;padding:2px 8px;font-size:11px;" onclick="openLoanWireForRow(${rowIdx})">貸款入款</button>`;
+  const bottom = r.loanPaidAt
+    ? `<span class="line1">${r.loanPaidAt}</span>`
+    : `<button class="btn-loan-wire" onclick="openLoanWireForRow(${rowIdx})">貸款入款</button>`;
   return `<div class="cell-two">
-    <span class="line1">${r.disbursedDate || '--'}</span>
-    ${sub}
+    <div class="row-top"><span class="line1">${r.disbursedDate || '--'}</span></div>
+    <div class="row-bot">${bottom}</div>
   </div>`;
 }
 
@@ -821,34 +831,34 @@ function renderDisbursement(r, rowIdx) {
 function renderOrderPlate(order, plate, hasActual) {
   const icon = `<button class="btn-record" onclick="alert('即將前往訂單明細頁')" title="查看訂單明細" style="margin-left:3px;">🔍</button>`;
   return `<div class="cell-two">
-    <span class="line1">${plate}</span>
-    <div style="display:flex;align-items:center;"><span class="line2">${order}</span>${icon}</div>
+    <div class="row-top"><span class="line1">${plate}</span></div>
+    <div class="row-bot"><span class="line2">${order}</span>${icon}</div>
   </div>`;
 }
 
-// 指定開立日期（上）/ 實際開立日期（下：已開立灰色，未開立淡紅色文字）
+// 指定開立日期（上）/ 實際開立日期（下：已開立採與上排一致字級字色，未開立淡紅色文字）
 function renderDates(target, actual) {
-  const line2 = actual
-    ? `<span class="line2">${actual}</span>`
+  const bottom = actual
+    ? `<span class="line1">${actual}</span>`
     : `<span class="line2-red">未開立</span>`;
   return `<div class="cell-two">
-    <span class="line1">${target}</span>
-    ${line2}
+    <div class="row-top"><span class="line1">${target}</span></div>
+    <div class="row-bot">${bottom}</div>
   </div>`;
 }
 
 function renderApplyTs(ts) {
   const [date, time] = ts.split(' ');
   return `<div class="cell-two">
-    <span class="line1">${date}</span>
-    <span class="line2">${time}</span>
+    <div class="row-top"><span class="line1">${date}</span></div>
+    <div class="row-bot"><span class="line2">${time}</span></div>
   </div>`;
 }
 
 function renderAgent(person, branch) {
   return `<div class="cell-two">
-    <span class="line1">${person}</span>
-    <span class="line2">${branch}</span>
+    <div class="row-top"><span class="line1">${person}</span></div>
+    <div class="row-bot"><span class="line2">${branch}</span></div>
   </div>`;
 }
 
@@ -869,6 +879,38 @@ function renderLicFileBtn(licCode, licFile, order, plate) {
     return `<span class="btn-no-action">--</span>`;
   }
   return `<button class="btn-upload" onclick="openUploadModal('${order}','${plate}')">⬆ 上傳</button>`;
+}
+
+// 車貸金額（上）/ 核貸總額（下：核貸總額與車貸金額不同時變綠字，否則與上排同字級字色）
+function renderLoanCombo(r) {
+  if (r.loanAmt == null) return '<span class="cell-one muted">--</span>';
+  const diffApproved = r.approvedAmt != null && r.approvedAmt !== r.loanAmt;
+  const approvedHtml = r.approvedAmt != null
+    ? `<span class="line1"${diffApproved ? ' style="color:#1e8e3e;"' : ''}>${r.approvedAmt.toLocaleString()}</span>`
+    : `<span class="line1 muted">--</span>`;
+  return `<div class="cell-two">
+    <div class="row-top" style="justify-content:flex-end;">${cellRight(r.loanAmt)}</div>
+    <div class="row-bot" style="justify-content:flex-end;">${approvedHtml}</div>
+  </div>`;
+}
+
+// 車證寄送處（上）/ 牌照繳銷處（下）
+function renderDestCancel(dest, cancelVal) {
+  const bottomHtml = (cancelVal && cancelVal !== '--')
+    ? `<span class="line2">${cancelVal}</span>`
+    : `<span class="line2">--</span>`;
+  return `<div class="cell-two">
+    <div class="row-top">${renderDestCell(dest)}</div>
+    <div class="row-bot">${bottomHtml}</div>
+  </div>`;
+}
+
+// 牌照狀態（上）/ 牌照繳銷單（下）
+function renderLicCell(r, rowIdx) {
+  return `<div class="cell-two">
+    <div class="row-top">${renderLicBadge(r.licCode, rowIdx)}</div>
+    <div class="row-bot">${renderLicFileBtn(r.licCode, r.licFile, r.order, r.plate)}</div>
+  </div>`;
 }
 
 function renderCancelCombo(licCode, cancelVal, licFile, order, plate) {
@@ -1045,22 +1087,24 @@ function renderTable(rows) {
       <td>${renderApplyTs(r.applyTs)}</td>
       <td>${renderDates(r.targetDate, r.actualDate)}</td>
       <td class="right">${cellRight(r.invoiceAmt)}</td>
-      <td class="right">${hasLoan
-        ? `<div class="cell-two" style="align-items:flex-end;">${cellRight(r.loanAmt)}<span class="line2" style="color:#aaa;">${r.approvedAmt != null ? r.approvedAmt.toLocaleString() : '--'}</span></div>`
-        : '<span class="cell-one muted">--</span>'}</td>
+      <td class="right">${renderLoanCombo(r)}</td>
       <td>${renderDisbursement(r, i)}</td>
-      <td>${renderDestCell(r.dest)}<div class="line2" style="margin-top:2px;">${cancelVal && cancelVal !== '--' ? cancelVal : '<span class="muted">--</span>'}</div></td>
-      <td>${renderLicBadge(r.licCode, i)}<div style="margin-top:5px;">${renderLicFileBtn(r.licCode, r.licFile, r.order, r.plate)}</div></td>
+      <td>${renderDestCancel(r.dest, cancelVal)}</td>
+      <td>${renderLicCell(r, i)}</td>
       <td class="center" style="white-space:nowrap;">
-        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 0;">
-          ${isEditLocked(r)
-            ? '<button class="btn-detail" disabled style="opacity:0.35;cursor:not-allowed;width:54px;" title="發票已開立且牌照已繳銷或出售，不可再編輯">編輯</button>'
-            : `<button class="btn-detail" style="width:54px;" onclick="openEditApplyModal(${i})">編輯</button>`
-          }
-          ${hasActual
-            ? '<button class="btn-detail" disabled style="width:54px;opacity:0.35;cursor:not-allowed;" title="發票已開立，不可退回">退回</button>'
-            : `<button class="btn-detail" style="width:54px;color:#d32f2f;border-color:#d32f2f;" onclick="openRejectModal(${i})">退回</button>`
-          }
+        <div class="cell-two">
+          <div class="row-top" style="justify-content:center;">
+            ${isEditLocked(r)
+              ? '<button class="btn-detail" disabled style="opacity:0.35;cursor:not-allowed;width:54px;" title="發票已開立且牌照已繳銷或出售，不可再編輯">編輯</button>'
+              : `<button class="btn-detail" style="width:54px;" onclick="openEditApplyModal(${i})">編輯</button>`
+            }
+          </div>
+          <div class="row-bot" style="justify-content:center;">
+            ${hasActual
+              ? '<button class="btn-detail" disabled style="width:54px;opacity:0.35;cursor:not-allowed;" title="發票已開立，不可退回">退回</button>'
+              : `<button class="btn-detail" style="width:54px;color:#d32f2f;border-color:#d32f2f;" onclick="openRejectModal(${i})">退回</button>`
+            }
+          </div>
         </div>
       </td>
     `;
