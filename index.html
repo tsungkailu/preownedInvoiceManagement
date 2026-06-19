@@ -69,13 +69,14 @@ col.c-cancel-combo { width: 130px; }
 .btn-detail { background: #fff; color: #555; border: 1px solid #ccc; border-radius: 5px; padding: 0 10px; font-size: 11px; cursor: pointer; }
 .btn-detail:hover { background: #f5f5f5; }
 
-.btn-loan-wire { background: #fff; color: #f57c00; border: 1px solid #f57c00; border-radius: 5px; padding: 0 8px; font-size: 11px; cursor: pointer; white-space: nowrap; }
-.btn-loan-wire:hover { background: #fff3e0; }
+.btn-loan-wire { background: #f57c00; color: #fff; border: none; border-radius: 5px; padding: 0 8px; font-size: 11px; cursor: pointer; white-space: nowrap; }
+.btn-loan-wire:hover { background: #e06f00; }
+.btn-loan-wire:disabled { background: #bbb; color: #fff; cursor: not-allowed; }
 
 .lic-badge { display: inline-block; font-size: 12px; cursor: pointer; user-select: none; }
 .lic-badge:hover { opacity: .7; }
 .lic-blue  { color: #1a1a1a; }
-.lic-green { color: #1a1a1a; }
+.lic-green { color: #1e8e3e; }
 .lic-gray  { color: #d32f2f; }
 .lic-red   { color: #1a1a1a; }
 
@@ -303,6 +304,12 @@ col.c-cancel-combo { width: 130px; }
         <option>全部</option><option>未繳銷或出售</option>
       </select>
     </div>
+    <div class="filter-group">
+      <label>貸款狀態</label>
+      <select id="loanStatusFilter">
+        <option>全部</option><option>無貸款</option><option>貸款已入款</option><option>貸款未入款</option>
+      </select>
+    </div>
     <button class="btn-default" onclick="applyFilter()">🔍 搜尋</button>
     <button class="btn-default" onclick="clearFilter()">清除</button>
   </div>
@@ -382,6 +389,18 @@ col.c-cancel-combo { width: 130px; }
     </div>
     <ul class="guide-list">
       <li class="guide-item">
+        <span class="guide-icon">🔍</span>
+        <span class="guide-text">點擊出售單號旁的放大鏡圖示，可前往<strong>訂單明細頁</strong>。</span>
+      </li>
+      <li class="guide-item">
+        <span class="guide-icon">📋</span>
+        <span class="guide-text">牌照繳銷單可至<strong>出售管理</strong>上傳。已由車管繳銷之車輛<strong>無須上傳</strong>。</span>
+      </li>
+      <li class="guide-item">
+        <span class="guide-icon">🚗</span>
+        <span class="guide-text">牌照狀態由系統自動取自 <strong>CRS</strong>。如需異動，請洽<strong>車管單位</strong>。</span>
+      </li>
+      <li class="guide-item">
         <span class="guide-icon">🟥</span>
         <span class="guide-text">指定開立日期已到，但尚未開立發票，以<strong>紅底標記</strong>，請優先處理。</span>
       </li>
@@ -394,24 +413,16 @@ col.c-cancel-combo { width: 130px; }
         <span class="guide-text">列印發票時，請確保您已接上<strong>發票熱感應列印機</strong>。</span>
       </li>
       <li class="guide-item">
-        <span class="guide-icon">🔍</span>
-        <span class="guide-text">點擊出售單號旁的放大鏡圖示，可前往<strong>訂單明細頁</strong>。</span>
-      </li>
-      <li class="guide-item">
-        <span class="guide-icon">📋</span>
-        <span class="guide-text">牌照繳銷單可至<strong>出售管理</strong>上傳。由車管繳銷之車輛<strong>無須上傳</strong>。</span>
-      </li>
-      <li class="guide-item">
-        <span class="guide-icon">🚗</span>
-        <span class="guide-text">牌照狀態由系統自動取自 <strong>CRS</strong>。如需異動，請洽<strong>車管單位</strong>。</span>
+        <span class="guide-icon">🧾</span>
+        <span class="guide-text">開立發票後，才可以操作<strong>貸款入款</strong>。</span>
       </li>
       <li class="guide-item">
         <span class="guide-icon">🔒</span>
-        <span class="guide-text">發票已開立，且牌照已<strong>繳銷/出售</strong>者，不可再異動。</span>
+        <span class="guide-text">發票一旦<strong>開立</strong>，即不可「編輯」或「退回」申請。</span>
       </li>
       <li class="guide-item">
-        <span class="guide-icon">📨</span>
-        <span class="guide-text">已開立發票，且牌照狀態<strong>未繳銷</strong>者，若尚未上傳<strong>牌照繳銷單</strong>，系統將於<strong>每月20日</strong>發信通知業代及營業(發票管理人)。</span>
+        <span class="guide-icon">🧾</span>
+        <span class="guide-text">已開立發票，但<strong>未繳銷牌照</strong>者，若未上傳<strong>繳銷單</strong>，系統將於<strong>每月20日</strong>發信通知業代及營業(發票管理人)。</span>
       </li>
     </ul>
     <div class="modal-footer" style="margin-top:1.25rem;">
@@ -685,9 +696,7 @@ col.c-cancel-combo { width: 130px; }
 
 <script>
 function isEditLocked(r) {
-  const invoiceDone = !!r.actualDate;
-  const licDoneOrSold = r.licCode === 'D' || r.licCode === '5';
-  return invoiceDone && licDoneOrSold;
+  return !!r.actualDate;
 }
 
 const LICENSE_STATUSES = [
@@ -702,7 +711,7 @@ const LICENSE_STATUSES = [
   {code:'8',label:'失竊尋回',    cls:'lic-red'  },
   {code:'9',label:'逕行註銷',    cls:'lic-red'  },
   {code:'C',label:'變更',        cls:'lic-red'  },
-  {code:'D',label:'繳銷',        cls:'lic-gray' },
+  {code:'D',label:'繳銷',        cls:'lic-green'},
   {code:'F',label:'購入退回',    cls:'lic-red'  },
   {code:'G',label:'停駛',        cls:'lic-red'  },
   {code:'H',label:'復駛',        cls:'lic-red'  },
@@ -818,9 +827,14 @@ function cellRight(val) {
 // 預計撥款日 + 貸款入款操作（兩行：日期 / 按鈕或已入款狀態）
 function renderDisbursement(r, rowIdx) {
   if (r.loanAmt == null) return '<span class="cell-one muted">--</span>';
-  const bottom = r.loanPaidAt
-    ? `<span class="line1">${r.loanPaidAt}</span>`
-    : `<button class="btn-loan-wire" onclick="openLoanWireForRow(${rowIdx})">貸款入款</button>`;
+  let bottom;
+  if (r.loanPaidAt) {
+    bottom = `<span class="line1">${r.loanPaidAt}</span>`;
+  } else if (!r.actualDate) {
+    bottom = `<button class="btn-loan-wire" disabled title="發票開立後才能進行貸款入款">貸款入款</button>`;
+  } else {
+    bottom = `<button class="btn-loan-wire" onclick="openLoanWireForRow(${rowIdx})">貸款入款</button>`;
+  }
   return `<div class="cell-two">
     <div class="row-top"><span class="line1">${r.disbursedDate || '--'}</span></div>
     <div class="row-bot">${bottom}</div>
@@ -1095,7 +1109,7 @@ function renderTable(rows) {
         <div class="cell-two">
           <div class="row-top" style="justify-content:center;">
             ${isEditLocked(r)
-              ? '<button class="btn-detail" disabled style="opacity:0.35;cursor:not-allowed;width:54px;" title="發票已開立且牌照已繳銷或出售，不可再編輯">編輯</button>'
+              ? '<button class="btn-detail" disabled style="opacity:0.35;cursor:not-allowed;width:54px;" title="發票已開立，不可再編輯">編輯</button>'
               : `<button class="btn-detail" style="width:54px;" onclick="openEditApplyModal(${i})">編輯</button>`
             }
           </div>
@@ -1121,26 +1135,31 @@ function sortByApplyTs(rows) {
 }
 
 function applyFilter() {
-  const s   = document.getElementById('statusFilter').value;
-  const o   = document.getElementById('orderFilter').value.trim().toLowerCase();
-  const p   = document.getElementById('plateFilter').value.trim().toLowerCase();
-  const lic = document.getElementById('licFilter').value;
+  const s    = document.getElementById('statusFilter').value;
+  const o    = document.getElementById('orderFilter').value.trim().toLowerCase();
+  const p    = document.getElementById('plateFilter').value.trim().toLowerCase();
+  const lic  = document.getElementById('licFilter').value;
+  const loan = document.getElementById('loanStatusFilter').value;
   const filtered = data.filter(r => {
     if (s === '已開立'  && !r.actualDate) return false;
     if (s === '申請中'  &&  r.actualDate) return false;
     if (o && !r.order.toLowerCase().includes(o)) return false;
     if (p && !r.plate.toLowerCase().includes(p)) return false;
     if (lic === '未繳銷或出售' && (r.licCode === 'D' || r.licCode === '5')) return false;
+    if (loan === '無貸款'     && r.loanAmt != null) return false;
+    if (loan === '貸款已入款' && !(r.loanAmt != null && r.loanPaidAt))  return false;
+    if (loan === '貸款未入款' && !(r.loanAmt != null && !r.loanPaidAt)) return false;
     return true;
   });
   renderTable(sortByApplyTs(filtered));
 }
 
 function clearFilter() {
-  document.getElementById('statusFilter').value = '全部';
-  document.getElementById('orderFilter').value  = '';
-  document.getElementById('plateFilter').value  = '';
-  document.getElementById('licFilter').value    = '全部';
+  document.getElementById('statusFilter').value     = '全部';
+  document.getElementById('orderFilter').value      = '';
+  document.getElementById('plateFilter').value      = '';
+  document.getElementById('licFilter').value        = '全部';
+  document.getElementById('loanStatusFilter').value = '全部';
   renderTable(sortByApplyTs(data));
 }
 
