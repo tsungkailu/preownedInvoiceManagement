@@ -612,12 +612,12 @@ col.c-cancel-combo { width: 130px; }
       <div class="apply-section-title">貸款 </div>
       <div class="apply-field-row" style="margin-bottom:4px;">
         <div class="apply-field">
-          <label>申貸金額：</label>
+          <label>車貸金額(不含超貸)：</label>
           <input type="text" id="loan-amt-0" value="$ 120,000" readonly="">
           <span class="err-msg" id="loan-amt-err-0"></span>
         </div>
         <div class="apply-field">
-          <label>貸款核定實撥金額：</label>
+          <label>貸款撥款總金額(含超貸)：</label>
           <input type="number" id="loan-approved-0" value="375000" placeholder="請輸入金額" min="0">
           <span class="err-msg" id="loan-approved-err-0"></span>
         </div>
@@ -1538,12 +1538,12 @@ function buildLoanSection(loans) {
       <div class="apply-section-title">貸款 ${loans.length > 1 ? i + 1 : ''}</div>
       <div class="apply-field-row" style="margin-bottom:4px;">
         <div class="apply-field">
-          <label>申貸金額：</label>
+          <label>車貸金額(不含超貸)：</label>
           <input type="text" id="loan-amt-${i}" value="$ ${l.amount.toLocaleString()}" readonly>
           <span class="err-msg" id="loan-amt-err-${i}"></span>
         </div>
         <div class="apply-field">
-          <label>貸款核定實撥金額：</label>
+          <label>貸款撥款總金額(含超貸)：</label>
           <input type="number" id="loan-approved-${i}" value="${l.approvedAmt}" placeholder="請輸入金額" min="0">
           <span class="err-msg" id="loan-approved-err-${i}"></span>
         </div>
@@ -1655,7 +1655,7 @@ function validateApplyForm() {
     const approvedAmt = Number(approvedEl.value);
 
     if (!approvedEl.value || isNaN(approvedAmt) || approvedAmt < loanAmt) {
-      approvedErr.textContent = '核貸金額需大於或等於申貸金額';
+      approvedErr.textContent = '貸款撥款總金額需大於或等於車貸金額';
       approvedEl.classList.add('err');
       valid = false;
     } else {
