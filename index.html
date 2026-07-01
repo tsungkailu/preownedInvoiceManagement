@@ -192,6 +192,7 @@ col.c-cancel-combo { width: 130px; }
 .apply-field-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px 14px; }
 .apply-field-row.col2 { grid-template-columns: repeat(2, 1fr); }
 .apply-field-row.col3 { grid-template-columns: repeat(3, 1fr); }
+.apply-field-row.col5 { grid-template-columns: repeat(5, 1fr); }
 
 /* Individual field */
 .apply-field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
@@ -579,21 +580,26 @@ col.c-cancel-combo { width: 130px; }
         <!-- 代付車款區塊（動態生成） -->
         <div id="am-proxy-section"><div class="apply-section">
       <div class="apply-section-title">代付車款 </div>
-      <div class="apply-field-row" style="margin-bottom:4px;">
+      <div class="apply-field-row col5" style="margin-bottom:4px;">
         <div class="apply-field">
           <label>代付車款金額：</label>
           <input type="text" id="proxy-amt-0" value="$ 100,000" readonly="">
           <span class="err-msg" id="proxy-amt-err-0"></span>
         </div>
         <div class="apply-field">
-          <label>買受人證號末5碼：</label>
-          <input type="text" id="proxy-buyer-0" value="12345" readonly="">
+          <label>買受人/證號末5碼：</label>
+          <input type="text" id="proxy-buyer-0" value="王大明/12345" readonly="">
           <span class="err-msg" id="proxy-buyer-err-0"></span>
         </div>
         <div class="apply-field">
-          <label>代付人證號末5碼：</label>
-          <input type="text" id="proxy-transfer-0" value="45678" readonly="">
+          <label>虛擬帳戶/帳戶末5碼：</label>
+          <input type="text" id="proxy-transfer-0" value="陳小美/12345" readonly="">
           <span class="err-msg" id="proxy-transfer-err-0"></span>
+        </div>
+        <div class="apply-field">
+          <label>匯款人：</label>
+          <input type="text" id="proxy-remitter-0" value="陳小美" readonly="">
+          <span class="err-msg" id="proxy-remitter-err-0"></span>
         </div>
         <div class="apply-field">
           <label>代付車款同意書：</label>
@@ -1244,7 +1250,7 @@ const applyMockData = {
   branch: '鳳山營業所', person: '李朝猛',
   balance: 0,
   proxyPayments: [
-    { id: 1, amount: 100000, buyerNo5: '12345', transferNo5: '45678', file: null },
+    { id: 1, amount: 100000, buyerNo5: '王大明/12345', transferNo5: '陳小美/12345', remitter: '陳小美', file: null },
   ],
   loans: [
     { id: 1, amount: 120000, approvedAmt: 105000, drawdownDate: '', file: null },
@@ -1472,21 +1478,26 @@ function buildProxySection(payments) {
     div.className = 'apply-section';
     div.innerHTML = `
       <div class="apply-section-title">代付車款 ${payments.length > 1 ? i + 1 : ''}</div>
-      <div class="apply-field-row" style="margin-bottom:4px;">
+      <div class="apply-field-row col5" style="margin-bottom:4px;">
         <div class="apply-field">
           <label>代付車款金額：</label>
           <input type="text" id="proxy-amt-${i}" value="$ ${p.amount.toLocaleString()}" readonly>
           <span class="err-msg" id="proxy-amt-err-${i}"></span>
         </div>
         <div class="apply-field">
-          <label>買受人證號末5碼：</label>
+          <label>買受人/證號末5碼：</label>
           <input type="text" id="proxy-buyer-${i}" value="${p.buyerNo5}" readonly>
           <span class="err-msg" id="proxy-buyer-err-${i}"></span>
         </div>
         <div class="apply-field">
-          <label>代付人證號末5碼：</label>
+          <label>虛擬帳戶/帳戶末5碼：</label>
           <input type="text" id="proxy-transfer-${i}" value="${p.transferNo5}" readonly>
           <span class="err-msg" id="proxy-transfer-err-${i}"></span>
+        </div>
+        <div class="apply-field">
+          <label>匯款人：</label>
+          <input type="text" id="proxy-remitter-${i}" value="${p.remitter}" readonly>
+          <span class="err-msg" id="proxy-remitter-err-${i}"></span>
         </div>
         <div class="apply-field">
           <label>代付車款同意書：</label>
